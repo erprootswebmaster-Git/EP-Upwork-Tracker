@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Upwork proposal tracker">
+<title>Upwork Proposal Tracker — Dinesh</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 24px;
+  background: #faf9f7; color: #1a1a18;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px; line-height: 1.5;
+}
+.wrap { max-width: 1100px; margin: 0 auto; }
+header { margin-bottom: 20px; }
+h1 { font-size: 22px; margin: 0 0 4px; font-weight: 600; letter-spacing: -0.01em; }
+.sub { color: #6b6b66; font-size: 13px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 20px 0; }
+.card { background: #fff; border: 1px solid #e6e4df; border-radius: 10px; padding: 14px 16px; }
+.card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #8a8a83; font-weight: 600; }
+.card .val { font-size: 26px; font-weight: 600; margin-top: 4px; letter-spacing: -0.02em; }
+.card .note { font-size: 12px; color: #8a8a83; margin-top: 2px; }
+.accent { color: #b4633a; }
+.good { color: #3f7d58; }
+.panel { background: #fff; border: 1px solid #e6e4df; border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+.panel h2 { font-size: 14px; margin: 0 0 12px; font-weight: 600; }
+.chartbox { position: relative; height: 240px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8a8a83; border-bottom: 1px solid #e6e4df; padding: 8px 10px; font-weight: 600; }
+td { padding: 8px 10px; border-bottom: 1px solid #f0eeea; vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.pill.yes { background: #e8f2ec; color: #2f6446; }
+.pill.no { background: #f2f1ee; color: #8a8a83; }
+.pill.unk { background: #fdf3e7; color: #8a5a26; }
+.pill.hot { background: #fbe9e2; color: #a04a26; }
+.controls { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+button { font: inherit; font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 1px solid #ddd9d2; background: #fff; color: #4a4a45; cursor: pointer; }
+button.on { background: #1a1a18; color: #fff; border-color: #1a1a18; }
+.foot { font-size: 12px; color: #8a8a83; margin-top: 18px; padding-top: 14px; border-top: 1px solid #e6e4df; }
+.alert { background: #fdf3e7; border: 1px solid #f0dcc0; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; }
+.alert b { color: #8a5a26; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Upwork Proposal Tracker</h1>
+  <div class="sub">DineshDurai N &middot; General Profile &middot; FY Apr 2026 &ndash; Mar 2027</div>
+</header>
+
+<div class="alert" id="hot"></div>
+
+<div class="cards" id="cards"></div>
+
+<div class="panel">
+  <h2>Proposals per week</h2>
+  <div class="chartbox"><canvas id="wk"></canvas></div>
+</div>
+
+<div class="panel">
+  <h2>Proposal log</h2>
+  <div class="controls">
+    <button data-f="all" class="on">All</button>
+    <button data-f="viewed">Viewed</button>
+    <button data-f="replied">Replied</button>
+    <button data-f="unknown">Status unknown</button>
+  </div>
+  <table><thead><tr><th style="width:90px">Date</th><th>Job title</th><th style="width:80px">Viewed</th><th style="width:80px">Replied</th><th style="width:150px">Note</th></tr></thead><tbody id="tb"></tbody></table>
+</div>
+
+<div class="foot" id="foot"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<script>
+const SCRAPED = "2026-08-20";
+// [date, title, viewed, replied, note]  viewed/replied: 1 yes, 0 no, null unknown
+const D = [
+["2026-06-25","Marketing & Growth Executive",null,null,"Archived"],
+["2026-06-25","Email marketing",null,null,"Archived"],
+["2026-06-29","Senior DTC Growth Marketer / Media Buyer",null,null,"Archived"],
+["2026-06-29","SEO Specialist Needed for Meta Fixes, Keyword Research",null,null,"Archived"],
+["2026-07-01","Meta Ads Media Buyer for Multi-Industry Marketing Agency",null,null,"Archived"],
+["2026-07-06","Media Buyer - Meta & Google Ads for Premium Fashion E-commerce",1,0,"Logged manually"],
+["2026-07-06","Experienced Marketing Specialist Needed",null,null,"Archived"],
+["2026-07-06","Performance Marketer and Ads specialist",null,null,"Archived"],
+["2026-07-06","Lead generation expert on Meta Ads.",null,null,"Archived"],
+["2026-07-06","Google Ads for Website and seo projects in UAE",0,0,""],
+["2026-07-06","Meta (Facebook) Attribution Expert",null,null,"Archived"],
+["2026-07-07","Facebook Ads Media Buyer for Mobile Apps",null,null,"Archived"],
+["2026-07-07","Arabic-Speaking Digital Marketing & Customer Acquisition",0,0,""],
+["2026-07-07","Paid Media Specialist",1,1,"Wanted an employee"],
+["2026-07-09","Meta Ads Expert for Cosmetics Campaign",null,null,"Archived"],
+["2026-07-09","Meta Ads Growth Partner - Financial Services Funnel",null,null,"Archived"],
+["2026-07-13","Expert Performance Marketer | Media Buyer & Creative Strategy",0,0,""],
+["2026-07-13","Performance Marketer for Lead Generation",0,0,""],
+["2026-07-13","Media Buyer (Lead Gen)",1,0,""],
+["2026-07-14","Facebook Ads Manager for eCommerce",null,null,"Archived"],
+["2026-07-14","Performance Marketing Expert | Facebook Ads Manager",0,0,""],
+["2026-07-14","Full-Time Meta & Google Ads Manager for Fast-Growing DTC",null,null,"Archived"],
+["2026-07-14","Meta Ad Specialist (Experienced Media Buyer)",1,1,"CONVERTED"],
+["2026-07-16","Meta Ads Manager for Startup",null,null,"Archived"],
+["2026-07-17","Digital Marketing Specialist for Solar Projects",null,null,"Archived"],
+["2026-07-17","E-commerce Growth Lead (Supplements)",0,0,""],
+["2026-07-20","Marketing Manager / Campaign Orchestrator $10M AU DTC",1,0,""],
+["2026-07-20","Growth Marketing Manager",0,0,""],
+["2026-07-22","Google Ads Specialist | Set Up & Launch High-Converting Campaigns",0,0,""],
+["2026-07-27","Growth Partner (Meta+Google) UAE Luxury D2C",0,0,""],
+["2026-07-27","Marketing Coordinator (Meta Ads)",0,0,""],
+["2026-07-27","SAAS Marketing Expert",0,0,""],
+["2026-07-29","Google Ads Specialist | Maximize Clicks Campaign Expert",0,0,""],
+["2026-07-29","Marketing manager - property management, California",1,0,""],
+["2026-07-29","Meta Ads Campaigns launch",0,0,""],
+["2026-07-29","Senior Meta Ads Agency account manager",0,0,""],
+["2026-08-03","Google Ads Buyer for DTC Home Pest Control Brand",0,0,""],
+["2026-08-03","Set Up Google Ads & Facebook Ads Campaigns for Our Website",null,null,"Archived"],
+["2026-08-03","Meta Ads Expert",0,0,""],
+["2026-08-03","Marketing and Advertising Expert Needed",0,0,""],
+["2026-08-03","Looking for an audit of how LLM's use my business",0,0,""],
+["2026-08-04","Meta Business suite and meta ads support",0,0,""],
+["2026-08-04","Marketing Facebook and Google",0,0,""],
+["2026-08-11","Senior Google Ads Expert to Help Grow UK Agency",0,0,""],
+["2026-08-11","Need a Paid Ads Consultant: Meta vs Google",0,0,""],
+["2026-08-11","Meta Ads Manager and Instagram Support",0,0,""],
+["2026-08-11","Meta Ads Expert",0,0,""],
+["2026-08-11","Senior Google Ads Specialist for Home Services",0,0,""],
+["2026-08-12","Media Buyer/Creative Strategist for Meta Ads (Static)",0,0,""],
+["2026-08-12","Performance Marketing Specialist",0,0,""],
+["2026-08-12","Online Advertising and Marketing management",0,0,""],
+["2026-08-12","Google Ads specialist for real estate business",0,0,""],
+["2026-08-12","Meta & Google Ads Media Buyer",0,0,""],
+["2026-08-13","Google Ads Search Campaign Setup",0,0,""],
+["2026-08-13","Google Ads Specialist for B2B Lead Gen | Wix & WordPress",0,0,""],
+["2026-08-13","Meta Ads Expert - Troubleshoot Facebook & Instagram Ads",1,0,""],
+["2026-08-13","Meta and Google Campaign Manager",0,0,""],
+["2026-08-13","Head of Marketing / Growth Manager - UK Home Services",null,null,"Job closed"],
+["2026-08-18","Meta Ads expert required for ongoing work",1,0,""],
+["2026-08-18","Freelance Media Buyer - White Label / On-Demand",0,0,""],
+["2026-08-18","Google Ads Expert for US Healthcare Lead Generation",1,0,""],
+["2026-08-18","GTM & Growth Campaign Manager - B2B Lead Generation",1,1,"OPEN THREAD"],
+["2026-08-18","Facebook Ads specialist for run meta ads campaigns",null,null,"Job closed"],
+["2026-08-19","Google Ads Specialist - Education / Tutoring (US)",0,0,""],
+["2026-08-19","META Ads Expert - E-commerce | Target 3X+ ROAS",0,0,""],
+["2026-08-19","Google Ads Account Suspension",0,0,""],
+["2026-08-19","Meta Ads Expert & Ad Creative Designer",1,0,""]
+];
+
+const total = D.length;
+const known = D.filter(r => r[2] !== null);
+const viewed = D.filter(r => r[2] === 1).length;
+const replied = D.filter(r => r[3] === 1).length;
+const unknown = total - known.length;
+const converted = D.filter(r => r[4] === "CONVERTED").length;
+const vRate = known.length ? Math.round(viewed / known.length * 100) : 0;
+const rRate = viewed ? Math.round(replied / viewed * 100) : 0;
+
+document.getElementById("cards").innerHTML = [
+  ["Proposals sent", total, "since 25 Jun"],
+  ["Viewed by client", viewed, vRate + "% of " + known.length + " known"],
+  ["Client replied", replied, rRate + "% of viewed"],
+  ["Converted", converted, "1 contract won"],
+  ["Status unknown", unknown, "archived, Upwork hides it"]
+].map((c, i) =>
+  '<div class="card"><div class="label">' + c[0] + '</div><div class="val' +
+  (i === 3 ? ' good' : i === 4 ? ' accent' : '') + '">' + c[1] +
+  '</div><div class="note">' + c[2] + '</div></div>'
+).join("");
+
+const hot = D.filter(r => r[4] === "OPEN THREAD");
+document.getElementById("hot").innerHTML = hot.length
+  ? '<b>Needs attention:</b> ' + hot.map(r => r[1] + " (" + r[0] + ")").join(", ") + " &mdash; client replied, no offer yet."
+  : "No open client threads right now.";
+
+// weekly buckets
+const wkMap = {};
+D.forEach(r => {
+  const d = new Date(r[0] + "T00:00:00");
+  const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+  const k = mon.toISOString().slice(0, 10);
+  if (!wkMap[k]) wkMap[k] = { n: 0, v: 0 };
+  wkMap[k].n++; if (r[2] === 1) wkMap[k].v++;
+});
+const wks = Object.keys(wkMap).sort();
+const fmt = k => new Date(k + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+new Chart(document.getElementById("wk"), {
+  type: "bar",
+  data: {
+    labels: wks.map(fmt),
+    datasets: [
+      { label: "Sent", data: wks.map(k => wkMap[k].n), backgroundColor: "#d6d2c8", borderRadius: 4 },
+      { label: "Viewed", data: wks.map(k => wkMap[k].v), backgroundColor: "#b4633a", borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 11 } } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { beginAtZero: true, ticks: { precision: 0, font: { size: 11 } }, grid: { color: "#f0eeea" } }
+    }
+  }
+});
+
+const pill = v => v === null ? '<span class="pill unk">?</span>'
+  : v === 1 ? '<span class="pill yes">Yes</span>' : '<span class="pill no">No</span>';
+
+let filter = "all";
+function render() {
+  const rows = D.filter(r =>
+    filter === "all" ? true :
+    filter === "viewed" ? r[2] === 1 :
+    filter === "replied" ? r[3] === 1 :
+    r[2] === null
+  ).slice().reverse();
+  document.getElementById("tb").innerHTML = rows.map(r =>
+    "<tr><td>" + new Date(r[0] + "T00:00:00").toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) +
+    "</td><td>" + r[1] + "</td><td>" + pill(r[2]) + "</td><td>" + pill(r[3]) + "</td><td>" +
+    (r[4] === "OPEN THREAD" ? '<span class="pill hot">Open thread</span>'
+     : r[4] === "CONVERTED" ? '<span class="pill yes">Won</span>'
+     : '<span style="color:#8a8a83;font-size:12px">' + r[4] + "</span>") +
+    "</td></tr>"
+  ).join("");
+}
+document.querySelectorAll("[data-f]").forEach(b => b.onclick = () => {
+  document.querySelectorAll("[data-f]").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); filter = b.dataset.f; render();
+});
+render();
+
+document.getElementById("foot").textContent =
+  "Last scraped " + new Date(SCRAPED + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) +
+  ". Refreshed automatically Mondays and Thursdays at 9am. Upwork removes the view indicator once a job closes, so archived proposals show an unknown status.";
+</script>
+</body>
+</html>
