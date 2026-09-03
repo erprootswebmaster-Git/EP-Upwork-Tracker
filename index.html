@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Upwork Proposal Tracker",
+  "schemaVersion": 1,
+  "description": "Live Upwork proposal tracker for DineshDurai N. Shows proposals sent, view rate, reply rate, conversions, weekly volume chart, and a filterable proposal log. Data scraped from Upwork via Chrome; refreshed by the twice-weekly scheduled task."
+}
+</script>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -78,7 +84,7 @@ button.on { background: #1a1a18; color: #fff; border-color: #1a1a18; }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
 <script>
-const SCRAPED = "2026-08-26";
+const SCRAPED = "2026-09-03";
 // [date, title, viewed, replied, note]  viewed/replied: 1 yes, 0 no, null unknown
 const D = [
 ["2026-06-25","Marketing & Growth Executive",null,null,"Archived"],
@@ -112,15 +118,15 @@ const D = [
 ["2026-07-22","Google Ads Specialist | Set Up & Launch High-Converting Campaigns",null,null,"Job closed by client"],
 ["2026-07-22","Digital Marketing Expert",null,null,"Job closed by client"],
 ["2026-07-22","Meta Ads specialist",null,null,"Job closed by client"],
-["2026-07-27","Growth Partner (Meta+Google) UAE Luxury D2C",0,0,""],
-["2026-07-27","Marketing Coordinator (Meta Ads)",0,0,""],
+["2026-07-27","Growth Partner (Meta+Google) UAE Luxury D2C",0,0,"Job closed by client"],
+["2026-07-27","Marketing Coordinator (Meta Ads)",null,null,"Job closed by client"],
 ["2026-07-27","SAAS Marketing Expert",0,0,""],
-["2026-07-29","Google Ads Specialist | Maximize Clicks Campaign Expert",0,0,""],
+["2026-07-29","Google Ads Specialist | Maximize Clicks Campaign Expert",null,null,"Job closed by client"],
 ["2026-07-29","Marketing manager - property management, California",1,0,""],
-["2026-07-29","Meta Ads Campaigns launch",0,0,""],
+["2026-07-29","Meta Ads Campaigns launch",null,null,"Job closed by client"],
 ["2026-07-29","Senior Meta Ads Agency account manager",0,0,""],
 ["2026-08-03","Google Ads Buyer for DTC Home Pest Control Brand",0,0,""],
-["2026-08-03","Set Up Google Ads & Facebook Ads Campaigns for Our Website",null,null,"Archived"],
+["2026-08-03","Set Up Google Ads & Facebook Ads Campaigns for Our Website",null,null,"Job closed by client"],
 ["2026-08-03","Facebook Meta Ads Specialist for Rental Cars & Rideshare",null,null,"Job closed by client"],
 ["2026-08-03","Meta Ads Expert",0,0,""],
 ["2026-08-03","Marketing and Advertising Expert Needed",0,0,""],
@@ -142,17 +148,17 @@ const D = [
 ["2026-08-13","Google Ads Specialist for B2B Lead Gen | Wix & WordPress",0,0,""],
 ["2026-08-13","Meta Ads Expert - Troubleshoot Facebook & Instagram Ads",1,0,""],
 ["2026-08-13","Meta and Google Campaign Manager",0,0,""],
-["2026-08-13","Head of Marketing / Growth Manager - UK Home Services",null,null,"Job closed"],
+["2026-08-13","Head of Marketing / Growth Manager - UK Home Services",null,null,"Job closed by client"],
 ["2026-08-18","Meta Ads expert required for ongoing work",1,0,""],
 ["2026-08-18","Freelance Media Buyer - White Label / On-Demand",1,1,"Job closed by client"],
 ["2026-08-18","Google Ads Expert for US Healthcare Lead Generation",1,0,""],
 ["2026-08-18","GTM & Growth Campaign Manager - B2B Lead Generation",1,1,"OPEN THREAD"],
-["2026-08-18","Facebook Ads specialist for run meta ads campaigns",null,null,"Job closed"],
+["2026-08-18","Facebook Ads specialist for run meta ads campaigns",null,null,"Job closed by client"],
 ["2026-08-19","Google Ads Specialist - Education / Tutoring (US)",0,0,""],
 ["2026-08-19","META Ads Expert - E-commerce | Target 3X+ ROAS",0,0,""],
 ["2026-08-19","Google Ads Account Suspension",0,0,""],
 ["2026-08-19","Meta Ads Expert & Ad Creative Designer",1,0,""],
-["2026-08-20","Meta Ads + Conversions API Specialist",1,1,"OPEN THREAD"],
+["2026-08-20","Meta Ads + Conversions API Specialist",1,1,"Job closed by client"],
 ["2026-08-20","Paid ads specialist - 30-day launch, Canada and US SaaS",0,0,""],
 ["2026-08-20","Meta Media Buyer - Local Lead Generation - US Agency",0,0,""],
 ["2026-08-20","Google Ads Search Campaign Manager - Lead Gen & CPL",0,0,""],
@@ -167,7 +173,18 @@ const D = [
 ["2026-08-25","Meta ads",0,0,""],
 ["2026-08-25","B2B Paid Ads Specialist Needed",0,0,""],
 ["2026-08-25","Paid Ads Manager Needed - Shopify Home Decor Store (Long-Term)",0,0,""],
-["2026-08-25","Meta Ads Specialist (Performance Marketing)",0,0,""]
+["2026-08-25","Meta Ads Specialist (Performance Marketing)",0,0,""],
+["2026-08-31","Google Ads Specialist Needed - Audit, Fix Current Performance & Improve Lead Generation",1,1,"OPEN THREAD"],
+["2026-08-31","Digital Marketing Strategist (SEM and Meta ads)",0,0,""],
+["2026-08-31","Meta Ads Specialist for Small Business",0,0,""],
+["2026-08-31","Meta Ads Specialist For Lead Generation",1,0,""],
+["2026-09-01","Google Ads Expert for International B2B Lead Generation | Outdoor Furniture",0,0,""],
+["2026-09-01","Digital Marketing Manager - Multi-Location Restaurant Group",0,0,""],
+["2026-09-01","Shopify Expert for eCommerce Website Design & Conversion Optimization",0,0,""],
+["2026-09-01","Google & Meta Ads Specialist",0,0,""],
+["2026-09-01","Digital Marketing Agency Services for Consumer Electronics",0,0,""],
+["2026-09-02","Google Ads Audit (3 Accounts) + Reusable Setup SOP for Local Service Clients",0,0,""],
+["2026-09-02","Performance Marketing / Growth Experiment Operator: Google Ads, Meta, LinkedIn",0,0,""]
 ];
 
 const total = D.length;
